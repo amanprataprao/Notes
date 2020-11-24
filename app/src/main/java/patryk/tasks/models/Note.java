@@ -9,18 +9,24 @@ import java.util.Date;
 public class Note {
 
     @PrimaryKey(autoGenerate = true)
-    private int id;
+    public int id;
 
-    private String note;
+    public String note;
 
-    private Date date;
+    public Date date;
 
-    private int priority;
+    public int priority;
 
-    public Note(String note, Date date, int priority) {
+    public double latitude;
+
+    private double longitude;
+
+    public Note(String note, Date date, int priority,double latitude,double longitude) {
         this.note = note;
         this.date = date;
         this.priority = priority;
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 
     public int getId() {
@@ -41,5 +47,13 @@ public class Note {
 
     public int getPriority() {
         return priority;
+    }
+    public double getLatitude(){
+        return latitude;
+    }
+
+    public double getLongitude()
+    {
+        return longitude;
     }
 }
