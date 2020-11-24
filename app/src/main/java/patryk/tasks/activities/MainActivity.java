@@ -2,6 +2,7 @@ package patryk.tasks.activities;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -20,10 +21,15 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.File;
 import java.util.Date;
+import java.util.Locale;
 
 import es.dmoral.toasty.Toasty;
 import patryk.tasks.R;
@@ -42,10 +48,18 @@ public class MainActivity extends AppCompatActivity implements NoteAdapter.OnIte
     private NoteViewModel noteViewModel;
     private NoteAdapter adapter;
 
+    public FusedLocationProviderClient mFusedLocationClient;
+
+
+    public Location mLastLocation;  //stores location
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
 
         // For reading old notes from previous storage
         // which was text file
@@ -121,19 +135,48 @@ public class MainActivity extends AppCompatActivity implements NoteAdapter.OnIte
         adapter.setOnItemClickListener(this);
     }
 
+    @SuppressWarnings("MissingPermission")
+    private void getLastLocation() {
+        mFusedLocationClient.getLastLocation()
+                .addOnCompleteListener(this, new OnCompleteListener<Location>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Location> task) {
+                        if (task.isSuccessful() && task.getResult() != null) {
+                            mLastLocation = task.getResult();
+
+
+                        } else {
+
+                            //showSnackbar("No location detected. Make sure location is enabled on the device.");
+                        }
+                    }
+                });
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
+        double latitude=0;
+        double longitude=0;
         if (requestCode == ADD_NOTE_REQUEST && resultCode == RESULT_OK) {
             String text = data.getStringExtra(AddEditActivity.EXTRA_TEXT);
             int priority = data.getIntExtra(AddEditActivity.EXTRA_PRIORITY, 1);
             Date pickedDate = (Date) data.getSerializableExtra(AddEditActivity.EXTRA_DATE);
 
-            Note note = new Note(text, pickedDate, priority);
-            noteViewModel.insert(note);
+            getLastLocation();
+            if(mLastLocation==null) {
+                latitude = -1;
+                longitude = -1;
+            }
+            else{
+                latitude = mLastLocation.getLatitude();
+                longitude = mLastLocation.getLongitude();
+            }
+            Note note = new Note(text, pickedDate, priority,latitude,longitude);
 
-            Toasty.success(this, getString(R.string.activity_note_successfully_saved), Toast.LENGTH_SHORT).show();
+            noteViewModel.insert(note);
+            Toasty.success(this, String.valueOf(latitude), Toast.LENGTH_SHORT).show();
+            //Toasty.success(this, getString(R.string.activity_note_successfully_saved), Toast.LENGTH_SHORT).show();
         } else if (requestCode == EDIT_NOTE_REQUEST && resultCode == RESULT_OK) {
 
             int id = data.getIntExtra(AddEditActivity.EXTRA_ID, -1);
@@ -145,9 +188,10 @@ public class MainActivity extends AppCompatActivity implements NoteAdapter.OnIte
             int priority = data.getIntExtra(AddEditActivity.EXTRA_PRIORITY, 1);
             Date pickedDate = (Date) data.getSerializableExtra(AddEditActivity.EXTRA_DATE);
 
-            Note note = new Note(text, pickedDate, priority);
+            Note note = new Note(text, pickedDate, priority,latitude,longitude);
             note.setId(id);
             noteViewModel.update(note);
+
 
             Toasty.info(this, getString(R.string.activity_update_message), Toast.LENGTH_SHORT).show();
         } else {
