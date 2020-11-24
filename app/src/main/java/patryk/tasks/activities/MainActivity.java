@@ -52,6 +52,8 @@ public class MainActivity extends AppCompatActivity implements NoteAdapter.OnIte
 
 
     public Location mLastLocation;  //stores location
+    double latitude=0;
+    double longitude=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements NoteAdapter.OnIte
         setContentView(R.layout.activity_main);
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-
+        getLastLocation();
 
         // For reading old notes from previous storage
         // which was text file
@@ -143,7 +145,7 @@ public class MainActivity extends AppCompatActivity implements NoteAdapter.OnIte
                     public void onComplete(@NonNull Task<Location> task) {
                         if (task.isSuccessful() && task.getResult() != null) {
                             mLastLocation = task.getResult();
-
+                            latitude = 2;
 
                         } else {
 
@@ -156,15 +158,15 @@ public class MainActivity extends AppCompatActivity implements NoteAdapter.OnIte
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        double latitude=0;
-        double longitude=0;
+
         if (requestCode == ADD_NOTE_REQUEST && resultCode == RESULT_OK) {
             String text = data.getStringExtra(AddEditActivity.EXTRA_TEXT);
             int priority = data.getIntExtra(AddEditActivity.EXTRA_PRIORITY, 1);
             Date pickedDate = (Date) data.getSerializableExtra(AddEditActivity.EXTRA_DATE);
 
-            getLastLocation();
+
             if(mLastLocation==null) {
+
                 latitude = -1;
                 longitude = -1;
             }
