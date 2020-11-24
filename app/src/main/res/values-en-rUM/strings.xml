@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Notes</string>
+    <string name="select_location">Add new location</string>
     <string name="adapter_priority_formatted_string">Priority: %d</string>
     <string name="empty_edittext">This field\ncannot be empty!</string>
     <string name="hint">Enter your note</string>
@@ -34,4 +35,7 @@
     <string name="notification_close_button_text">Close</string>
     <string name="notification_open_button_text">Open</string>
     <string name="alert_save_progress_prompt_title_unsaved_progress">Unsaved progress</string>
+    <string name="action_geolocate">Pick Place</string>
+    <string name="default_info_title">Default Location</string>
+    <string name="default_info_snippet">No places found, because location permission is disabled.</string>
 </resources>

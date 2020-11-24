@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="patryk.tasks">
 
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
@@ -12,6 +13,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
+        <activity android:name=".activities.SearchActivity"/>
+        <activity android:name=".activities.MapsActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
 
         <receiver android:name="com.allyants.notifyme.NotificationPublisher" />
         <receiver android:name="com.allyants.notifyme.BootNotifyMe">
@@ -23,7 +30,7 @@
         </receiver>
 
         <activity
-            android:name="patryk.tasks.activities.MainActivity"
+            android:name=".activities.MainActivity"
             android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -32,8 +39,8 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="patryk.tasks.activities.AddEditActivity"
-            android:parentActivityName="patryk.tasks.activities.MainActivity" />
+            android:name=".activities.AddEditActivity"
+            android:parentActivityName=".activities.MainActivity" />
 
         <meta-data
             android:name="preloaded_fonts"
