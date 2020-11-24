@@ -1,5 +1,6 @@
 package patryk.tasks.activities;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
@@ -9,10 +10,12 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -20,6 +23,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 
 import com.allyants.notifyme.NotifyMe;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -31,6 +35,7 @@ import es.dmoral.toasty.Toasty;
 import patryk.tasks.R;
 
 public class AddEditActivity extends AppCompatActivity {
+    private final int MY_LOCATION_ACTIVITY = 500;
 
     public static final String EXTRA_ID = "package patryk.notes.EXTRA_ID";
     public static final String EXTRA_TEXT = "package patryk.notes.EXTRA_TEXT";
@@ -90,6 +95,40 @@ public class AddEditActivity extends AppCompatActivity {
         }
 
         return true;
+    }
+    public void selectLocationResult(View view){
+
+//        Intent resultIntent = new Intent();
+//        // TODO Add extras or a data URI to this intent as appropriate.
+//        final LatLng latLng = GlobalMarker.getPosition();
+//        resultIntent.putExtra("latLng", latLng);
+//        setResult(Activity.RESULT_OK, resultIntent);
+//        finish();
+
+        Intent intent = new Intent(AddEditActivity.this, SearchActivity.class);
+
+        startActivityForResult(intent, MY_LOCATION_ACTIVITY);
+
+    }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch(requestCode) {
+            case (MY_LOCATION_ACTIVITY) : {
+                if (resultCode == Activity.RESULT_OK) {
+                    // TODO Extract the data returned from the child Activity.
+                    LatLng selectedLocation = data.getExtras().getParcelable("latLng");
+                    if(selectedLocation!=null){
+                        Toast.makeText(AddEditActivity.this, ""+selectedLocation.latitude, Toast.LENGTH_SHORT).show();
+                    }
+                    else{
+                        Toast.makeText(AddEditActivity.this, "No location selected", Toast.LENGTH_SHORT).show();
+                    }
+
+                }
+                break;
+            }
+        }
     }
 
     @Override
