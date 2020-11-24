@@ -22,7 +22,7 @@ import patryk.tasks.converters.Converters;
 import patryk.tasks.interfaces.NoteDao;
 import patryk.tasks.models.Note;
 
-@Database(entities = Note.class, version = 1, exportSchema = false)
+@Database(entities = Note.class, version = 2, exportSchema = false)
 @TypeConverters(Converters.class)
 public abstract class NoteDB extends RoomDatabase {
 
@@ -75,7 +75,7 @@ public abstract class NoteDB extends RoomDatabase {
                     BufferedReader reader = new BufferedReader(new InputStreamReader(fileInputStream));
                     String line;
                     while ((line = reader.readLine()) != null) {
-                        noteDao.insert(new Note(line, new Date(), 1));
+                        noteDao.insert(new Note(line, new Date(), 1,-1,-1));
                     }
                     reader.close();
                 } catch (IOException e) {
