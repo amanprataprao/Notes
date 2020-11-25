@@ -56,6 +56,12 @@ public class NoteAdapter extends ListAdapter<Note, NoteAdapter.NoteHolder> {
         holder.note.setText(note.getNote());
         holder.date.setText(dateFormat.format(note.getDate()));
         holder.priority.setText(String.format(context.getResources().getString(R.string.adapter_priority_formatted_string), note.getPriority()));
+        double latitude = note.getLatitude();
+        String lat = new Double(latitude).toString();
+        double longitude = note.getLongitude();
+        String lon = new Double(longitude).toString();
+        holder.latitude.setText(lat);
+        holder.longitude.setText(lon);
     }
 
     public Note getNoteAt(int position) {
@@ -72,6 +78,8 @@ public class NoteAdapter extends ListAdapter<Note, NoteAdapter.NoteHolder> {
 
     public class NoteHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
+        public TextView latitude;
+        public TextView longitude;
         private TextView note;
         private TextView date;
         private TextView priority;
@@ -82,7 +90,8 @@ public class NoteAdapter extends ListAdapter<Note, NoteAdapter.NoteHolder> {
             note = itemView.findViewById(R.id.note);
             date = itemView.findViewById(R.id.date);
             priority = itemView.findViewById(R.id.priority);
-
+            longitude = itemView.findViewById(R.id.longitude);
+            latitude = itemView.findViewById(R.id.latitude);
             itemView.setOnClickListener(this);
         }
 
