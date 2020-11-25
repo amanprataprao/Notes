@@ -1,5 +1,6 @@
 package patryk.tasks.activities;
 
+import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
@@ -29,7 +30,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.File;
 import java.util.Date;
-import java.util.Locale;
 
 import es.dmoral.toasty.Toasty;
 import patryk.tasks.R;
@@ -201,6 +201,7 @@ public class MainActivity extends AppCompatActivity implements NoteAdapter.OnIte
         }
     }
 
+    @SuppressLint("RestrictedApi")
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
