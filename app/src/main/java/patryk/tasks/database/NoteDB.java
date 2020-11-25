@@ -75,7 +75,7 @@ public abstract class NoteDB extends RoomDatabase {
                     BufferedReader reader = new BufferedReader(new InputStreamReader(fileInputStream));
                     String line;
                     while ((line = reader.readLine()) != null) {
-                        noteDao.insert(new Note(line, new Date(), 1,-1,-1));
+                        noteDao.insert(new Note(line, new Date(), 1,-1,-1, 0));
                     }
                     reader.close();
                 } catch (IOException e) {

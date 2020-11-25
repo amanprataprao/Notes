@@ -21,12 +21,15 @@ public class Note {
 
     private double longitude;
 
-    public Note(String note, Date date, int priority,double latitude,double longitude) {
+    public double distance;
+
+    public Note(String note, Date date, int priority,double latitude,double longitude, double distance) {
         this.note = note;
         this.date = date;
         this.priority = priority;
         this.latitude = latitude;
         this.longitude = longitude;
+        this.distance = distance;
     }
 
     public int getId() {
@@ -55,5 +58,15 @@ public class Note {
     public double getLongitude()
     {
         return longitude;
+    }
+
+    public double getDistance()
+    {
+        return distance;
+    }
+
+    public void setDistance(double distance)
+    {
+        this.distance = distance;
     }
 }

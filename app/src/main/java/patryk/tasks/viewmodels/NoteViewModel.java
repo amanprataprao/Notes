@@ -1,6 +1,7 @@
 package patryk.tasks.viewmodels;
 
 import android.app.Application;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -53,5 +54,11 @@ public class NoteViewModel extends AndroidViewModel {
 
     public void sortNotes(String orderBy) {
         repository.setSortingOrder(orderBy);
+    }
+
+    public void updateDistance()
+    {
+        Log.d("Hello", "In NoteViewModel.java");
+        repository.updateDistance();
     }
 }

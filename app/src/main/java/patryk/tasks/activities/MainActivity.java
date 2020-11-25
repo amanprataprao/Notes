@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -44,6 +45,7 @@ public class MainActivity extends AppCompatActivity implements NoteAdapter.OnIte
     public static final String SORT_ALPHABETICALLY = "note";
     public static final String SORT_BY_DATE = "date";
     public static final String SORT_BY_PRIORITY = "priority";
+    public static final String SORT_BY_DISTANCE = "distance";
     public static File fileDir;
     private NoteViewModel noteViewModel;
     private NoteAdapter adapter;
@@ -174,7 +176,7 @@ public class MainActivity extends AppCompatActivity implements NoteAdapter.OnIte
                 latitude = mLastLocation.getLatitude();
                 longitude = mLastLocation.getLongitude();
             }
-            Note note = new Note(text, pickedDate, priority,latitude,longitude);
+            Note note = new Note(text, pickedDate, priority,latitude,longitude, 0);
 
             noteViewModel.insert(note);
             Toasty.success(this, String.valueOf(latitude), Toast.LENGTH_SHORT).show();
@@ -190,7 +192,7 @@ public class MainActivity extends AppCompatActivity implements NoteAdapter.OnIte
             int priority = data.getIntExtra(AddEditActivity.EXTRA_PRIORITY, 1);
             Date pickedDate = (Date) data.getSerializableExtra(AddEditActivity.EXTRA_DATE);
 
-            Note note = new Note(text, pickedDate, priority,latitude,longitude);
+            Note note = new Note(text, pickedDate, priority,latitude,longitude, 0);
             note.setId(id);
             noteViewModel.update(note);
 
@@ -240,6 +242,13 @@ public class MainActivity extends AppCompatActivity implements NoteAdapter.OnIte
                 return true;
             case R.id.menu_sort_by_priority:
                 noteViewModel.sortNotes(SORT_BY_PRIORITY);
+                return true;
+            case R.id.menu_sort_by_distance:
+                Log.d("HELLO", "Sort by distance clicked!");
+                noteViewModel.updateDistance();
+                Log.d("Hello","Distance updated");
+                noteViewModel.sortNotes(SORT_BY_DISTANCE);
+                Log.d("Hello","Sorted by distance");
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
