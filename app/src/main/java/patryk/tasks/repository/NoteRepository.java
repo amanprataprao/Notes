@@ -143,6 +143,7 @@ public class NoteRepository {
             //double lat2 = notes[0].getLatitude();
             //double lng2 = notes[0].getLongitude();
             //notes[0].distance = Math.sqrt((lng2-lng1)*(lng2-lng1) + (lat2-lat1)*(lat2-lat1));
+            Log.d("Hello", String.valueOf(notes.length));
             for (int i = 0; i<notes.length; i++)
             {
                 double lat1 = 37, lng1 = 50;

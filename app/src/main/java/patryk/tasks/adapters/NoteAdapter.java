@@ -57,9 +57,11 @@ public class NoteAdapter extends ListAdapter<Note, NoteAdapter.NoteHolder> {
         holder.date.setText(dateFormat.format(note.getDate()));
         holder.priority.setText(String.format(context.getResources().getString(R.string.adapter_priority_formatted_string), note.getPriority()));
         double latitude = note.getLatitude();
-        String lat = new Double(latitude).toString();
+        //String lat = new Double(latitude).toString();
+        String lat = String.format("%.2f", latitude);
         double longitude = note.getLongitude();
-        String lon = new Double(longitude).toString();
+        //String lon = new Double(longitude).toString();
+        String lon = String.format("%.2f", longitude);
         holder.latitude.setText(lat);
         holder.longitude.setText(lon);
     }
