@@ -41,6 +41,8 @@ public class AddEditActivity extends AppCompatActivity {
     public static final String EXTRA_TEXT = "package patryk.notes.EXTRA_TEXT";
     public static final String EXTRA_DATE = "package patryk.notes.EXTRA_DATE";
     public static final String EXTRA_PRIORITY = "package patryk.notes.EXTRA_PRIORITY";
+    public static final String EXTRA_LAT = "package patryk.notes.EXTRA_LAT";
+    public static final String EXTRA_LNG = "package patryk.notes.EXTRA_Lng";
     private static final Calendar calendar = Calendar.getInstance();
     public static boolean IS_ADD_ACTIVITY;
     private static Intent intent = new Intent();
@@ -51,6 +53,7 @@ public class AddEditActivity extends AppCompatActivity {
     private EditText userInput;
     private NumberPicker priority;
     private Intent incomingIntent;
+    public LatLng selectedLocation;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -117,7 +120,7 @@ public class AddEditActivity extends AppCompatActivity {
             case (MY_LOCATION_ACTIVITY) : {
                 if (resultCode == Activity.RESULT_OK) {
                     // TODO Extract the data returned from the child Activity.
-                    LatLng selectedLocation = data.getExtras().getParcelable("latLng");
+                    selectedLocation = data.getExtras().getParcelable("latLng");
                     if(selectedLocation!=null){
                         Toast.makeText(AddEditActivity.this, ""+selectedLocation.latitude, Toast.LENGTH_SHORT).show();
                     }
@@ -167,7 +170,16 @@ public class AddEditActivity extends AppCompatActivity {
         if (id != -1) {
             intent.putExtra(EXTRA_ID, id);
         }
-
+        if(selectedLocation == null)
+        {
+            intent.putExtra(EXTRA_LAT, -500);
+            intent.putExtra(EXTRA_LNG, -500);
+        }
+        else
+        {
+            intent.putExtra(EXTRA_LAT, selectedLocation.latitude);
+            intent.putExtra(EXTRA_LNG, selectedLocation.longitude);
+        }
         // Pick date for the note
         datePickerDialogFragment.setFlag(DatePickerDialogFragment.FLAG_SAVE_NOTE);
         datePickerDialogFragment.show(getSupportFragmentManager(), "datePicker");

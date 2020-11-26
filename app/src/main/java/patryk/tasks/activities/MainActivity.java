@@ -165,16 +165,20 @@ public class MainActivity extends AppCompatActivity implements NoteAdapter.OnIte
             String text = data.getStringExtra(AddEditActivity.EXTRA_TEXT);
             int priority = data.getIntExtra(AddEditActivity.EXTRA_PRIORITY, 1);
             Date pickedDate = (Date) data.getSerializableExtra(AddEditActivity.EXTRA_DATE);
-
-
-            if(mLastLocation==null) {
+            double lat = data.getDoubleExtra(AddEditActivity.EXTRA_LAT, -500);
+            double lng = data.getDoubleExtra(AddEditActivity.EXTRA_LNG, -500);
+            if (mLastLocation == null) {
 
                 latitude = -1;
                 longitude = -1;
-            }
-            else{
+            } else {
                 latitude = mLastLocation.getLatitude();
                 longitude = mLastLocation.getLongitude();
+            }
+            if (lat != -500 && lng != -500)
+            {
+                latitude = lat;
+                longitude = lng;
             }
             Note note = new Note(text, pickedDate, priority,latitude,longitude, 0);
 
@@ -269,6 +273,8 @@ public class MainActivity extends AppCompatActivity implements NoteAdapter.OnIte
         intent.putExtra(AddEditActivity.EXTRA_TEXT, note.getNote());
         intent.putExtra(AddEditActivity.EXTRA_DATE, note.getDate());
         intent.putExtra(AddEditActivity.EXTRA_PRIORITY, note.getPriority());
+        intent.putExtra(AddEditActivity.EXTRA_LAT, note.getLatitude());
+        intent.putExtra(AddEditActivity.EXTRA_LNG, note.getLongitude());
         startActivityForResult(intent, EDIT_NOTE_REQUEST);
     }
 }

@@ -27,12 +27,12 @@ public class Note {
         this.note = note;
         this.date = date;
         this.priority = priority;
-        //this.latitude = latitude;
-        this.latitude = Math.random()*200-100;
-        //this.longitude = longitude;
-        this.longitude = Math.random()*200-100;
+        this.latitude = latitude;
+        //this.latitude = Math.random()*200-100;
+        this.longitude = longitude;
+        //this.longitude = Math.random()*200-100;
         //this.distance = distance;
-        this.distance = Math.sqrt((this.longitude-50)*(this.longitude-50) + (this.latitude-37)*(this.latitude-37));
+        this.distance = Math.sqrt((this.longitude-81.86)*(this.longitude-81.86) + (this.latitude-25.45)*(this.latitude-25.45));
     }
 
     public int getId() {
