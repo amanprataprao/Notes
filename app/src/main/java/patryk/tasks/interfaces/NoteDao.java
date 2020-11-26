@@ -32,6 +32,9 @@ public interface NoteDao {
     @Query("SELECT * FROM notes_table ORDER BY lower(note) ASC")
     LiveData<List<Note>> getNotesByName();
 
+    @Query("SELECT * FROM notes_table ORDER BY distance ASC")
+    LiveData<List<Note>> getNotesByDistance();
+
     @Query("SELECT * FROM notes_table ORDER BY date ASC")
     LiveData<List<Note>> getNotesByDate();
 }

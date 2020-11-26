@@ -63,6 +63,12 @@ public class NoteRepository {
         return mNotes;
     }
 
+    public void updateDistance() {
+        Log.d("Hello", "In updateDistance() in NoteRepository.java");
+        new UpdateDistanceAsyncTask(noteDao).execute();
+        Log.d("Hello", "UpdateDistanceAsync finished");
+    }
+
     public void setSortingOrder(String order) {
         this.order.setValue(order);
     }
@@ -79,6 +85,9 @@ public class NoteRepository {
                 break;
             case "priority":
                 sortedNotes = noteDao.getNotesByPriority();
+                break;
+            case "distance":
+                sortedNotes = noteDao.getNotesByDistance();
                 break;
             default:
                 // Wrong sorting parameter
@@ -99,6 +108,7 @@ public class NoteRepository {
         @Override
         protected Void doInBackground(Note... notes) {
             noteDao.insert(notes[0]);
+            Log.d("Hello", String.valueOf(notes[0].distance));
             return null;
         }
     }
@@ -114,6 +124,37 @@ public class NoteRepository {
         @Override
         protected Void doInBackground(Note... notes) {
             noteDao.update(notes[0]);
+            return null;
+        }
+    }
+
+    private static class UpdateDistanceAsyncTask extends AsyncTask<Note, Void, Void> {
+
+        private NoteDao noteDao;
+
+        private UpdateDistanceAsyncTask(NoteDao noteDao) {
+            this.noteDao = noteDao;
+        }
+        @Override
+        protected Void doInBackground(Note... notes) {
+            //double lat1 = 37;
+            //double lng1 = 50;
+            //Log.d("Hello", String.valueOf(notes[0]));
+            //double lat2 = notes[0].getLatitude();
+            //double lng2 = notes[0].getLongitude();
+            //notes[0].distance = Math.sqrt((lng2-lng1)*(lng2-lng1) + (lat2-lat1)*(lat2-lat1));
+            Log.d("Hello", String.valueOf(notes.length));
+            for (int i = 0; i<notes.length; i++)
+            {
+                double lat1 = 37, lng1 = 50;
+                //double lat2 = notes[i].getLatitude(), lng2 = notes[i].getLongitude();
+                double lat2 = Math.random(), lng2 = Math.random();
+                notes[i].setDistance(Math.sqrt((lng2-lng1)*(lng2-lng1) + (lat2-lat1)*(lat2-lat1)));
+                Log.d("Hello", String.valueOf(notes[i].distance));
+                System.out.println(notes[i].distance);
+                noteDao.update(notes[i]);
+            }
+            //noteDao.update(notes[0]);
             return null;
         }
     }
