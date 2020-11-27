@@ -12,7 +12,9 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Address;
 import android.location.Location;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -45,6 +47,7 @@ import com.google.android.libraries.places.api.net.FindCurrentPlaceRequest;
 import com.google.android.libraries.places.api.net.FindCurrentPlaceResponse;
 import com.google.android.libraries.places.api.net.PlacesClient;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -53,6 +56,7 @@ import patryk.tasks.R;
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMapLongClickListener {
     private GoogleMap mMap;
     private Marker GlobalMarker;
+    private Geocoder geocoder;
     // New variables for Current Place Picker
     private static final String TAG = "MapsActivity";
     ListView lstPlaces;
@@ -88,10 +92,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+        geocoder = new Geocoder(this);
 
-        //
-        // PASTE THE LINES BELOW THIS COMMENT
-        //
 
         // Set up the action toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -179,8 +181,20 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         if(GlobalMarker!=null){
             GlobalMarker.remove();
         }
-        GlobalMarker = mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Searched Location"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney, DEFAULT_ZOOM));
+        try {
+            List<Address> addresses = geocoder.getFromLocation(sydney.latitude, sydney.longitude, 1);
+            if (addresses.size() > 0) {
+                Address address = addresses.get(0);
+                String streetAddress = address.getAddressLine(0);
+                GlobalMarker = mMap.addMarker(new MarkerOptions()
+                        .position(sydney)
+                        .title(streetAddress)
+                );
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney, DEFAULT_ZOOM));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         //
         // PASTE THE LINES BELOW THIS COMMENT
@@ -194,7 +208,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         // Prompt the user for permission.
         getLocationPermission();
-        //getCurrentPlaceLikelihoods();
 
     }
 
@@ -225,9 +238,21 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             if(GlobalMarker!=null){
                                 GlobalMarker.remove();
                             }
-                            GlobalMarker = mMap.addMarker(new MarkerOptions()
-                                    .position(new LatLng(mLastKnownLocation.getLatitude(),
-                                            mLastKnownLocation.getLongitude())));
+                            try {
+                                LatLng latLng = new LatLng(mLastKnownLocation.getLatitude(),
+                                        mLastKnownLocation.getLongitude());
+                                List<Address> addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
+                                if (addresses.size() > 0) {
+                                    Address address = addresses.get(0);
+                                    String streetAddress = address.getAddressLine(0);
+                                    GlobalMarker = mMap.addMarker(new MarkerOptions()
+                                            .position(latLng)
+                                            .title(streetAddress)
+                                    );
+                                }
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
                         } else {
                             Log.d(TAG, "Current location is null. Using defaults.");
                             mMap.moveCamera(CameraUpdateFactory
@@ -272,57 +297,34 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-    /**
-     * When user taps an item in the Places list, add a marker to the map with the place details
-     */
-    private AdapterView.OnItemClickListener listClickedHandler = new AdapterView.OnItemClickListener() {
-        public void onItemClick(AdapterView parent, View v, int position, long id) {
-            // position will give us the index of which place was selected in the array
-            LatLng markerLatLng = mLikelyPlaceLatLngs[position];
-            String markerSnippet = mLikelyPlaceAddresses[position];
-            if (mLikelyPlaceAttributions[position] != null) {
-                markerSnippet = markerSnippet + "\n" + mLikelyPlaceAttributions[position];
-            }
 
-            // Add a marker for the selected place, with an info window
-            // showing information about that place.
-            if(GlobalMarker!=null){
-                GlobalMarker.remove();
-            }
-            GlobalMarker = mMap.addMarker(new MarkerOptions()
-                    .title(mLikelyPlaceNames[position])
-                    .position(markerLatLng)
-                    .snippet(markerSnippet));
-
-            // Position the map's camera at the location of the marker.
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(markerLatLng));
-        }
-    };
-
-    /**
-     * Display a list allowing the user to select a place from a list of likely places.
-     */
-    private void fillPlacesList() {
-        // Set up an ArrayAdapter to convert likely places into TextViews to populate the ListView
-        ArrayAdapter<String> placesAdapter =
-                new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, mLikelyPlaceNames);
-//        lstPlaces.setAdapter(placesAdapter);
-//        lstPlaces.setOnItemClickListener(listClickedHandler);
-    }
 
     @Override
     public void onMapLongClick(LatLng latLng) {
         if(GlobalMarker!=null){
             GlobalMarker.remove();
         }
-        GlobalMarker = mMap.addMarker(new MarkerOptions()
-                .position(latLng));
+        try {
+            List<Address> addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
+            if (addresses.size() > 0) {
+                Address address = addresses.get(0);
+                String streetAddress = address.getAddressLine(0);
+                GlobalMarker = mMap.addMarker(new MarkerOptions()
+                        .position(latLng)
+                        .title(streetAddress)
+                );
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void sendLocationResult(View view){
         Intent resultIntent = new Intent();
         // TODO Add extras or a data URI to this intent as appropriate.
         final LatLng latLng = GlobalMarker.getPosition();
+        String streetAddress = GlobalMarker.getTitle();
+        resultIntent.putExtra("streetAddress", streetAddress);
         resultIntent.putExtra("latLng", latLng);
         setResult(Activity.RESULT_OK, resultIntent);
         finish();
