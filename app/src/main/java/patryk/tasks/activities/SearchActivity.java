@@ -93,10 +93,14 @@ public class SearchActivity extends AppCompatActivity {
             case (MY_MAP_ACTIVITY) : {
                 if (resultCode == Activity.RESULT_OK) {
                     // TODO Extract the data returned from the child Activity.
-                    LatLng selectedLocation = data.getExtras().getParcelable("latLng");
+                    Bundle bundle = data.getExtras();
+                    LatLng selectedLocation = bundle.getParcelable("latLng");
+                    String streetAddress = bundle.getString("streetAddress");
+
                     Intent resultIntent = new Intent();
                     // TODO Add extras or a data URI to this intent as appropriate.
                     resultIntent.putExtra("latLng", selectedLocation);
+                    resultIntent.putExtra("streetAddress", streetAddress);
                     setResult(Activity.RESULT_OK, resultIntent);
                     finish();
 

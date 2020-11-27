@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -121,8 +122,12 @@ public class AddEditActivity extends AppCompatActivity {
                 if (resultCode == Activity.RESULT_OK) {
                     // TODO Extract the data returned from the child Activity.
                     selectedLocation = data.getExtras().getParcelable("latLng");
+                    String streetAddress = data.getExtras().getString("streetAddress");
+
                     if(selectedLocation!=null){
-                        Toast.makeText(AddEditActivity.this, ""+selectedLocation.latitude, Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(AddEditActivity.this, ""+selectedLocation.latitude, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(AddEditActivity.this, ""+streetAddress, Toast.LENGTH_LONG).show();
+
                     }
                     else{
                         Toast.makeText(AddEditActivity.this, "No location selected", Toast.LENGTH_SHORT).show();
