@@ -23,7 +23,9 @@ public class Note {
 
     public double distance;
 
-    public Note(String note, Date date, int priority,double latitude,double longitude, double distance) {
+    public String streetAddress;
+
+    public Note(String note, Date date, int priority,double latitude,double longitude, double distance, String streetAddress) {
         this.note = note;
         this.date = date;
         this.priority = priority;
@@ -33,6 +35,7 @@ public class Note {
         //this.longitude = Math.random()*200-100;
         //this.distance = distance;
         this.distance = Math.sqrt((this.longitude-81.86)*(this.longitude-81.86) + (this.latitude-25.45)*(this.latitude-25.45));
+        this.streetAddress = streetAddress;
     }
 
     public int getId() {
@@ -71,5 +74,10 @@ public class Note {
     public void setDistance(double distance)
     {
         this.distance = distance;
+    }
+
+    public String getStreetAddress()
+    {
+        return streetAddress;
     }
 }

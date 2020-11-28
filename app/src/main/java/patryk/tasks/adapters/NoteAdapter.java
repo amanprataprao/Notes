@@ -59,10 +59,11 @@ public class NoteAdapter extends ListAdapter<Note, NoteAdapter.NoteHolder> {
         double latitude = note.getLatitude();
         //String lat = new Double(latitude).toString();
         String lat = String.format("%.2f", latitude);
-        double longitude = note.getLongitude();
+        //double longitude = note.getLongitude();
         //String lon = new Double(longitude).toString();
-        String lon = String.format("%.2f", longitude);
-        holder.latitude.setText(lat);
+        //String lon = String.format("%.2f", longitude);
+        String lon = note.getStreetAddress();
+        //holder.latitude.setText(lat);
         holder.longitude.setText(lon);
     }
 
@@ -93,7 +94,7 @@ public class NoteAdapter extends ListAdapter<Note, NoteAdapter.NoteHolder> {
             date = itemView.findViewById(R.id.date);
             priority = itemView.findViewById(R.id.priority);
             longitude = itemView.findViewById(R.id.longitude);
-            latitude = itemView.findViewById(R.id.latitude);
+            //latitude = itemView.findViewById(R.id.latitude);
             itemView.setOnClickListener(this);
         }
 

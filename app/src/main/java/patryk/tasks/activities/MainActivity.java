@@ -3,6 +3,8 @@ package patryk.tasks.activities;
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
@@ -25,12 +27,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Date;
+import java.util.List;
 
 import es.dmoral.toasty.Toasty;
 import patryk.tasks.R;
@@ -56,6 +61,8 @@ public class MainActivity extends AppCompatActivity implements NoteAdapter.OnIte
     public Location mLastLocation;  //stores location
     double latitude=0;
     double longitude=0;
+    private Geocoder geocoder;
+    public String streetAddress = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +71,8 @@ public class MainActivity extends AppCompatActivity implements NoteAdapter.OnIte
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         getLastLocation();
+
+        geocoder = new Geocoder(this);
 
         // For reading old notes from previous storage
         // which was text file
@@ -180,11 +189,31 @@ public class MainActivity extends AppCompatActivity implements NoteAdapter.OnIte
                 latitude = lat;
                 longitude = lng;
             }
-            Note note = new Note(text, pickedDate, priority,latitude,longitude, 0);
+            try {
+                LatLng latLng = new LatLng(latitude, longitude);
+                Log.d("Location", String.valueOf(latitude));
+                Log.d("Location", String.valueOf(longitude));
+                List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
+                if (addresses.size() > 0) {
+                    Address address = addresses.get(0);
+                    streetAddress = address.getAddressLine(0);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try {
+                Log.d("Hello", streetAddress);
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+            Note note = new Note(text, pickedDate, priority,latitude,longitude, 0, streetAddress);
 
             noteViewModel.insert(note);
-            Toasty.success(this, String.valueOf(latitude), Toast.LENGTH_SHORT).show();
-            //Toasty.success(this, getString(R.string.activity_note_successfully_saved), Toast.LENGTH_SHORT).show();
+            //Toasty.success(this, streetAddress, Toast.LENGTH_SHORT).show();
+            //Toasty.success(this, String.valueOf(latitude), Toast.LENGTH_SHORT).show();
+            Toasty.success(this, getString(R.string.activity_note_successfully_saved), Toast.LENGTH_SHORT).show();
         } else if (requestCode == EDIT_NOTE_REQUEST && resultCode == RESULT_OK) {
 
             int id = data.getIntExtra(AddEditActivity.EXTRA_ID, -1);
@@ -196,7 +225,7 @@ public class MainActivity extends AppCompatActivity implements NoteAdapter.OnIte
             int priority = data.getIntExtra(AddEditActivity.EXTRA_PRIORITY, 1);
             Date pickedDate = (Date) data.getSerializableExtra(AddEditActivity.EXTRA_DATE);
 
-            Note note = new Note(text, pickedDate, priority,latitude,longitude, 0);
+            Note note = new Note(text, pickedDate, priority,latitude,longitude, 0, streetAddress);
             note.setId(id);
             noteViewModel.update(note);
 
